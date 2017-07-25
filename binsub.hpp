@@ -46,9 +46,21 @@ namespace binpack {
         }
 
         /**
-         * Copy construction forbidden         
+         * Copy constructor
          */
-        BinSub(const BinSub&) = delete;
+        BinSub(const BinSub& bs) = default;
+           
+        /**
+         * Move assign
+         * @param bs bin subproblem to move
+         * @return this
+         */
+        BinSub& operator = (BinSub&& bs) {
+            mItem2bin = std::move(bs.mItem2bin);
+            mRemCapacity = std::move(bs.mRemCapacity);
+            mUsedBins = bs.mUsedBins;            
+            return *this;
+        }
 
 
         /**
@@ -77,8 +89,9 @@ namespace binpack {
      */
     std::ostream& operator<<(std::ostream& os, const BinSub& bs) {
         int nbins = bs.mRemCapacity.size();
+        os << "used bins = " << bs.mUsedBins << "\n";
         for (int i = 0; i < nbins; i++) {
-            os << "bin " << i << ", rc = " << bs.mRemCapacity[i] << " : ";
+            os << "bin " <<  i  << ", rc = " << bs.mRemCapacity[i] << ", items : ";            
             auto it = bs.mItem2bin.cbegin();
             while (it != bs.mItem2bin.cend()) {
                 it = std::find(it, bs.mItem2bin.cend(), i);
