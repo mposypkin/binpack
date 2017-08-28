@@ -10,7 +10,7 @@ CPP = c++
 INCLUDE = -I$(SNOWGOOSE) -I$(COMPI)
 
 # C++ compiler options
-CPPOPTS = --std=c++14 $(INCLUDE) -g
+CPPOPTS = --std=c++14 -Wall $(INCLUDE) 
 
 # Libraries to include 
 LIBS = 
@@ -19,7 +19,7 @@ LIBS =
 LDFLAGS = -pthread 
 
 
-all: binpack.exe
+all: binpack.exe mtbinpack.exe
 
 -include deps.inc
 

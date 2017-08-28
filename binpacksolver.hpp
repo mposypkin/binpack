@@ -16,64 +16,57 @@
 
 #include <memory>
 #include "binpackproblem.hpp"
+#include "binsub.hpp"
 
 namespace binpack {
 
     class BinPackSolver {
     public:
 
-        BinPackSolver(std::shared_ptr<BinPackProblem> bp) : mBP(bp) {
+        BinPackSolver(const BinPackProblem& bp) : mBP(bp) {
         }
         
         /**
          * Solve the problem 
-         * @param bestPacking best packing found so far (to be updated by the solver)
+         * @param bestPacking best packing found before the call
+         * @param subproblems on entry (to be updated by the solver)
          * @param on entry - maximal number of steps to perform, on exit - actual number
+         * @return best packing
          */
-        void solve(BinSub& bestPacking, int& nsteps) {
-            int maxSteps = nsteps;
+        BinSub solve(const BinSub& bestPacking, std::vector<binpack::BinSub>& bsv, int& nsteps) {
+            const int maxSteps = nsteps;
+            BinSub localBestPacking(bestPacking);
             nsteps = 0;
-            std::vector<binpack::BinSub> bsv;
-            const int nbins = mBP->mWeights.size();
-            binpack::BinSub ibs(nbins, mBP->mBinCapacity);
-            bsv.push_back(std::move(ibs));
+            const int nbins = localBestPacking.mUsedBins;
             while ((!bsv.empty()) && (nsteps < maxSteps)) {
                 nsteps ++;
                 binpack::BinSub bs(std::move(bsv.back()));
-                const int curItem = bs.mItem2bin.size();
+                const unsigned int curItem = bs.mItem2bin.size();
                 bsv.pop_back();
-                if (bs.mUsedBins >= bestPacking.mUsedBins)
+                if (bs.mUsedBins >= localBestPacking.mUsedBins)
                     continue;
-                //std::cout << "Processing subproblem: \n" << bs << "\n";
                 for (int i = 0; i < nbins; i++) {
-                    if (i + 1 >= bestPacking.mUsedBins)
+                    if (i + 1 >= localBestPacking.mUsedBins)
                         break;
-                    const int rc = bs.mRemCapacity[i] - mBP->mWeights[curItem];
+                    const int rc = bs.mRemCapacity[i] - mBP.mWeights[curItem];
                     if (rc < 0)
                         continue;
                     binpack::BinSub bsn(bs);
                     bsn.mRemCapacity[i] = rc;
-                    if (bsn.mRemCapacity[i] < 0)
-                        continue;
                     bsn.mItem2bin.push_back(i);
                     bsn.mUsedBins = std::max(bs.mUsedBins, i + 1);
-                    if (curItem == mBP->mWeights.size() - 1) {
-                        if (bsn.mUsedBins < bestPacking.mUsedBins)
-                            bestPacking = std::move(bsn);
+                    if (curItem == mBP.mWeights.size() - 1) {
+                        if (bsn.mUsedBins < localBestPacking.mUsedBins)
+                            localBestPacking = std::move(bsn);
                     } else
                         bsv.push_back(std::move(bsn));
                 }
-                //bsv.push_back(std::move(bs));
-
-                //std::cout << "Current queue:\n";
-                //std::copy(bsv.cbegin(), bsv.cend(), std::ostream_iterator<binpack::BinSub>(std::cout, "\n\n"));
-                //char c;
-                //std::cin >> c;
             }
+            return localBestPacking;
         }
         
     private:
-        std::shared_ptr<BinPackProblem> mBP;
+        const BinPackProblem& mBP;
     };
 }
 
