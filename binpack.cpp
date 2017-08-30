@@ -17,14 +17,22 @@
 #include <algorithm>
 #include <iterator>
 #include <limits>
+#include <iostream>
 #include "binsub.hpp"
 #include "binpackproblem.hpp"
 #include "binpacksolver.hpp"
 
 void g() {
-    //binpack::BinPackProblem bpp({10, 20, 20, 30}, 40);
+#if 1    
+    binpack::BinPackProblem bpp;
+    std::cin >> bpp;
+#endif
+
+#if 0    
     std::vector<int> v = {100, 98, 96, 93, 91, 87, 81, 59, 58, 55, 50, 43, 22, 21, 20, 15, 14, 10, 8, 6, 5, 4, 3, 1, 0};
     binpack::BinPackProblem  bpp(v, 100);
+#endif
+    
     std::cout << bpp << "\n";
     const int nbins = bpp.mWeights.size();
     binpack::BinPackSolver bs(bpp);

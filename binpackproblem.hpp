@@ -26,6 +26,13 @@ namespace binpack {
 
         /**
          * Constructor
+         */
+        BinPackProblem() :
+        mBinCapacity(0) {
+        }
+
+        /**
+         * Constructor
          * @param weights item weights
          * @param cap bin capacity
          */
@@ -57,6 +64,26 @@ namespace binpack {
         os << " capacity = " << bp.mBinCapacity;
         return os;
     }
+
+    /**
+     * Input operator
+     * @param is output stream
+     * @param bp problem description
+     * @return output stream
+     */
+    std::istream& operator>>(std::istream& is, BinPackProblem& bp) {
+        int n;
+        is >> n;
+        is >> bp.mBinCapacity;
+        for (int i = 0; i < n; i++) {
+            int x;
+            is >> x;
+            bp.mWeights.push_back(x);
+        }
+        return is;
+    }
+
+
 
 }
 
