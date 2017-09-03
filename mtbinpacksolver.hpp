@@ -61,14 +61,14 @@ namespace binpack {
                 nsteps = 0;
                 BinSub localBestPacking(bestPacking);
                 if (bsv.size() == 1) {
-                    const int nbins = localBestPacking.mUsedBins;
-                    while ((!bsv.empty()) && (bsv.size() < 2) && (nsteps < maxSteps)) {
+                     while ((!bsv.empty()) && (bsv.size() < 2) && (nsteps < maxSteps)) {
                         nsteps++;
                         binpack::BinSub bs(std::move(bsv.back()));
                         const unsigned int curItem = bs.mItem2bin.size();
                         bsv.pop_back();
                         if (bs.mUsedBins >= localBestPacking.mUsedBins)
                             continue;
+                        const int nbins = std::min(bs.mUsedBins + 1, localBestPacking.mUsedBins - 1);
                         for (int i = 0; i < nbins; i++) {
                             if (i + 1 >= localBestPacking.mUsedBins)
                                 break;
@@ -93,7 +93,7 @@ namespace binpack {
                         const int szh = sz / 2;
                         auto bi = bsv.cbegin() + szh;
                         auto ei = bsv.cend();
-                        std::vector<binpack::BinSub> bsv2(bi, ei);
+                        std::vector<binpack::BinSub> bsv2(std::make_move_iterator(bi), std::make_move_iterator(ei));
                         bsv.erase(bi, ei);
                         int *psteps1 = new int(maxSteps), *psteps2 = new int(maxSteps);
                         binpack::BinSub bestPacking1(localBestPacking);
