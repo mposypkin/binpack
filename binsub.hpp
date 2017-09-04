@@ -65,7 +65,7 @@ namespace binpack {
 
         /**
          * Contains numbers of bins (assignments of items to bins) for assigned items 
-         * item2bin[i] is the number of a bin where i is stored
+         * item2bin[i] is the number of a bin where item 'i' is stored
          */
         std::vector<int> mItem2bin;
 
