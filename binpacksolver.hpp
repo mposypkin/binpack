@@ -25,7 +25,7 @@ namespace binpack {
 
         BinPackSolver(const BinPackProblem& bp) : mBP(bp) {
         }
-        
+
         /**
          * Solve the problem 
          * @param bestPacking best packing found before the call
@@ -37,14 +37,14 @@ namespace binpack {
             const int maxSteps = nsteps;
             BinSub localBestPacking(bestPacking);
             nsteps = 0;
-            const int nbins = localBestPacking.mUsedBins;
             while ((!bsv.empty()) && (nsteps < maxSteps)) {
-                nsteps ++;
+                nsteps++;
                 binpack::BinSub bs(std::move(bsv.back()));
                 const unsigned int curItem = bs.mItem2bin.size();
                 bsv.pop_back();
                 if (bs.mUsedBins >= localBestPacking.mUsedBins)
                     continue;
+                const int nbins = std::min(bs.mUsedBins + 1, localBestPacking.mUsedBins - 1);
                 for (int i = 0; i < nbins; i++) {
                     if (i + 1 >= localBestPacking.mUsedBins)
                         break;
@@ -64,7 +64,7 @@ namespace binpack {
             }
             return localBestPacking;
         }
-        
+
     private:
         const BinPackProblem& mBP;
     };
