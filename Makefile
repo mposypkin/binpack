@@ -10,7 +10,7 @@ CPP = c++
 INCLUDE = -I$(SNOWGOOSE) -I$(COMPI)
 
 # C++ compiler options
-CPPOPTS = --std=c++14 -Wall $(INCLUDE) 
+CPPOPTS = --std=c++14 -O -Wall $(INCLUDE) 
 
 # Libraries to include 
 LIBS = 

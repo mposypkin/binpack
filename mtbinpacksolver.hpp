@@ -52,7 +52,7 @@ namespace binpack {
          * @return best packing found 
          */
         BinSub solve(const BinSub& bestPacking, std::vector<binpack::BinSub> bsv, int& nsteps, int np) {
-            std::cout << "in solve: np = " << np << "\n";
+            //std::cout << "in solve: np = " << np << "\n";
             if (np == 1) {
                 BinPackSolver bps(mBP);
                 return bps.solve(bestPacking, bsv, nsteps);
